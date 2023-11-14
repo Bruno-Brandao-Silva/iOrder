@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  backend:
+    build: /backend
+    image: backend-image
+    ports:
+      - "3001:3001"
+    volumes:
+      - .:/src
+    environment:
+      - MONGODB_URL=mongodb://mongodb:27017/iorder
+    depends_on:
+      - mongodb
+    networks:
+      - iorder-network
+
+  frontend:
+    build: /frontend
+    image: frontend-image
+    ports:
+      - "5173:5173"
+    networks:
+      - iorder-network
+
+  mongodb:
+    image: mongo:6-jammy
+    ports:
+      - "27017:27017"
+    volumes:
+      - /tmp/mongo-data:/data/db
+    networks:
+      - iorder-network
+
+networks:
+  iorder-network:
+    driver: bridge
