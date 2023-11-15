@@ -40,10 +40,16 @@ export default function Orders() {
         });
     }
 
+    const Color = {
+        PENDING: '#FFFFFF',
+        PREPARING: '#F6A609',
+        DONE: '#2AC769'
+    }
+
     return (
         <div className='OrderContainer'>
             {orders.map((order) => (
-                <div className={`OrderCard ${order.status}`} key={order._id}>
+                <div className={`OrderCard ${order.status}`} key={order._id} style={ { backgroundColor: Color[order.status] } }>
                     <header>
                         <h3>Pedido <strong>#{order._id.substr(0, 15)} </strong></h3>
                         <small>MESA #{order.table} </small>
