@@ -39,7 +39,7 @@ export default function Orders({ backendIP }: { backendIP: string }) {
   const onPressHandler = (order: Order) => {
     if (order.status === 'DONE')
       Alert.alert(
-        'Confirmação',
+        'Confirmar entrega',
         'Você tem certeza que deseja continuar?',
         [
           {
