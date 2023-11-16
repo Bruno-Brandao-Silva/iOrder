@@ -1,6 +1,12 @@
 import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
+  ip:{
+    position: 'absolute',
+    bottom: 105,
+    width: '100%',
+    textAlign: 'center',
+  },
   container: {
     flex: 1,
     backgroundColor: '#eee',
@@ -39,10 +45,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  buttonDisabled: {
+  backgroundColor: '#A30011',
+  borderRadius: 5,
+  height: 50,
+  width: '100%',
+  alignItems: 'center',
+  justifyContent: 'center',
+},
   buttonText: {
-    color: '#fff',
-    fontSize: 18,
-  },
+  color: '#fff',
+  fontSize: 18,
+},
 });
 
 export { styles }

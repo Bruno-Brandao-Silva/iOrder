@@ -1,25 +1,30 @@
 import React, { useState, useEffect } from 'react';
-import { FlatList, Text, View, StyleSheet } from 'react-native';
-import socketIo from 'socket.io-client';
-
+import { FlatList, Text, View, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import socketIo, { Socket } from 'socket.io-client';
+import axios from 'axios';
 
 interface Order {
   _id: string;
   table: number;
   status: string;
 }
-const socket = socketIo('ws://192.168.56.1:3001', {
-  transports: ['websocket'],
-});
 
-export default function Orders() {
+let socket: Socket | undefined = undefined;
+
+export default function Orders({ backendIP }: { backendIP: string }) {
+
   const [orders, setOrders] = useState<Order[]>([]);
 
   useEffect(() => {
-    fetch('http://192.168.56.1:3001/orders')
-      .then((res) => res.json())
-      .then(setOrders);
+    axios.get(`http://${backendIP}:3001/orders`).then((response) => {
+      setOrders(response.data);
+    });
 
+    if (socket == undefined) {
+      socket = socketIo(`ws://${backendIP}:3001`, {
+        transports: ['websocket'],
+      });
+    }
     !socket.hasListeners('newOrder') &&
       socket.on('newOrder', (order: Order) => {
         setOrders((prevState) => [order, ...prevState]);
@@ -31,20 +36,41 @@ export default function Orders() {
         );
       });
   }, []);
-
+  const onPressHandler = (order: Order) => {
+    if (order.status === 'DONE')
+      Alert.alert(
+        'Confirmação',
+        'Você tem certeza que deseja continuar?',
+        [
+          {
+            text: 'Cancelar',
+            style: 'cancel',
+          },
+          {
+            text: 'Confirmar',
+            onPress: () => {
+              axios.patch(`http://${backendIP}:3001/orders/${order._id}/status`, { "status": "DELIVERED" });
+            },
+          },
+        ],
+        { cancelable: false }
+      );
+  };
   return (
     <FlatList
       data={orders}
       keyExtractor={(order) => order._id}
       renderItem={({ item: order }) => (
-        <View style={[styles.card, order.status === 'PREPARING' ? styles.preparing : styles.done]}>
-          <Text style={[styles.tableNumber, order.status === 'PREPARING' ? styles.preparing : styles.done]}>
-            #{order.table}
-          </Text>
-          <Text style={[styles.status, order.status === 'PREPARING' ? styles.preparing : styles.done]}>
-            {order.status}
-          </Text>
-        </View>
+        order.status !== 'DELIVERED' ? <View style={[styles.card, order.status === 'PREPARING' ? styles.preparing : styles.done]}>
+          <TouchableOpacity onPress={() => { onPressHandler(order) }}>
+            <Text style={[styles.tableNumber, order.status === 'PREPARING' ? styles.preparing : styles.done]}>
+              #{order.table}
+            </Text>
+            <Text style={[styles.status, order.status === 'PREPARING' ? styles.preparing : styles.done]}>
+              {order.status}
+            </Text>
+          </TouchableOpacity>
+        </View> : null
       )}
       contentContainerStyle={styles.listContainer}
     />

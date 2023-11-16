@@ -15,40 +15,29 @@ import {
   Keyboard,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import axios from 'axios';
 //@ts-ignore
 import logo from '../../images/logo.png';
 
 interface ModalProps {
   visible: boolean;
+  backendIP: string;
   onRequestClose: () => void;
 }
 
-export default function Modal({ visible, onRequestClose }: ModalProps) {
+export default function Modal({ visible, backendIP, onRequestClose }: ModalProps) {
   const [table, setTable] = useState<string | null>(null);
   const [description, setDescription] = useState<string | null>(null);
 
-  async function  handleSubmit() {
-    try{
-      const response = await fetch('http://192.168.56.1:3001/orders', {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ table, description }),
-    })
-    const data = await response.json();
-
-      // .then((resp) => {
-      //   if (resp.ok) {
-      //     Alert.alert('Pedido cadastrado com sucesso!');
-      //     onRequestClose();
-      //   } else {
-      //     Alert.alert('Ops!', 'Ocorreu um erro ao cadastrar o pedido!');
-      //   }
-      // });
-    }catch(e){
-      console.log(e);
+  async function handleSubmit() {
+    const url = `http://${backendIP}:3001/orders`;
+    const response = await axios.post(url, { table, description });
+    if (response.status === 200) {
+      setTable(null);
+      setDescription(null);
+      onRequestClose();
+    } else {
+      Alert.alert('Erro ao cadastrar pedido!');
     }
   }
 
@@ -92,7 +81,6 @@ export default function Modal({ visible, onRequestClose }: ModalProps) {
                     autoCorrect={false}
                   />
                 </View>
-
                 <View style={styles.formGroup}>
                   <Button onPress={handleSubmit} title='Cadastrar Pedido' />
                 </View>

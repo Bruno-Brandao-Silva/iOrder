@@ -3,13 +3,11 @@ import { Request, Response } from 'express';
 
 
 export async function index(req: Request, res: Response) {
-    // Listar pedidos
     const orders = await Order.find();
     res.json(orders);
 }
 
 export async function store(req: any, res: Response) {
-    // Criar novos pedidos
     const { table, description } = req.body;
 
     if (!table || !description) {
@@ -24,7 +22,6 @@ export async function store(req: any, res: Response) {
     res.json(order);
 }
 export async function update(req: any, res: Response) {
-    // Alterar status
     const { id } = req.params;
     const { status } = req.body;
 
@@ -41,4 +38,3 @@ export async function update(req: any, res: Response) {
     req.io.emit('statusChange', order);
     res.json(order);
 }
-

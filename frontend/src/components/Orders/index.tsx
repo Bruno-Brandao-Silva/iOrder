@@ -40,16 +40,12 @@ export default function Orders() {
         });
     }
 
-    const Color = {
-        PENDING: '#FFFFFF',
-        PREPARING: '#F6A609',
-        DONE: '#2AC769'
-    }
+
 
     return (
         <div className='OrderContainer'>
             {orders.map((order) => (
-                <div className={`OrderCard ${order.status}`} key={order._id} style={ { backgroundColor: Color[order.status] } }>
+                <div className={`${order.status} OrderCard`} key={order._id} >
                     <header>
                         <h3>Pedido <strong>#{order._id.substr(0, 15)} </strong></h3>
                         <small>MESA #{order.table} </small>
@@ -59,6 +55,7 @@ export default function Orders() {
                         <option value="PENDING" > Pendente </option>
                         <option value="PREPARING" > Preparando </option>
                         <option value="DONE" > Finalizado </option>
+                        <option value="DELIVERED" > Entregue </option>
                     </select>
                 </div>
             ))}

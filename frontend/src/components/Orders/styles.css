@@ -7,7 +7,21 @@ div.OrderContainer {
   grid-template-columns: repeat(2, 1fr);
 }
 
-PREPARING {
+.PENDING {
+  background: #fff;
+
+  header small {
+    background: #ccc;
+    color: #fff;
+  }
+
+  select {
+    border-color: #CCC;
+  }
+
+}
+
+.PREPARING {
   background: #F6A609;
   color: #fff;
 
@@ -22,7 +36,7 @@ PREPARING {
 
 }
 
-DONE {
+.DONE {
   background: #2AC769;
   color: #fff;
 
@@ -37,8 +51,22 @@ DONE {
 
 }
 
+.DELIVERED {
+  /* OPAQUE */
+  background: rgba(0, 0, 0, 0.2);
+  color: #666;
+
+  header small {
+    background: #fff;
+    color: #0A100D;
+  }
+
+  select {
+    border-color: rgba(0, 0, 0, 0.2);
+  }
+}
+
 div.OrderCard {
-  background: #fff;
   box-shadow: 0px 8px 8px rgba(0, 0, 0, 0.1);
   border-radius: 5px;
   padding: 16px;
@@ -54,10 +82,9 @@ div.OrderCard {
     }
 
     small {
-      background: #ccc;
       border-radius: 5px;
       padding: 4px 8px;
-      color: #fff;
+      /* color: #fff; */
     }
   }
 
@@ -71,13 +98,7 @@ div.OrderCard {
     margin-top: 8px;
     width: 100%;
     height: 45px;
-    border: 1px solid #ccc;
+    border: 1px solid;
     border-radius: 5px;
   }
 }
-
-/* $ {
-  (props)=>cardStatusVariants[props.status] || null
-}
-
-`; */
