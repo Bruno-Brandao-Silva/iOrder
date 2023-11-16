@@ -7,10 +7,9 @@ import router from './routes';
 import { Server } from 'socket.io';
 import dgram from 'dgram';
 
-mongoose.connect('mongodb://127.0.0.1:27017/iorders');
-// mongoose.connect('mongodb://mongodb:27017/iorders');
+mongoose.connect('mongodb://mongodb:27017/iorders');
 
-const PORT = (process.env.PORT || 3001) as number;
+const PORT = 3001;
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
@@ -23,16 +22,16 @@ app.use(cors());
 app.use(express.json());
 app.use(router);
 
-server.listen(PORT, () => console.log(`Server started at https://localhost:${PORT}`));
 
 const udpServer = dgram.createSocket('udp4');
 udpServer.bind(3002);
 udpServer.on('message', (msg, rinfo) => {
 
-    console.log(`[Backend] Received message from ${rinfo.address}:${rinfo.port} : ${msg}`)
-        ;
+    console.log(`[Backend] Received message from ${rinfo.address}:${rinfo.port} : ${msg}`);
     if (msg.toString() === 'iOrder[Mobile]') {
         const responseData = `iOrder[Backend]`;
         udpServer.send(responseData, rinfo.port, rinfo.address);
     }
 });
+
+server.listen(PORT, () => console.log(`Server started at http://localhost:${PORT}`));
